@@ -3,6 +3,9 @@
     "description": "MCP server connecting your Zotero library to Claude and other AI assistants (search, cite, summarize, semantic search). Installs the PyPI package 'zotero-mcp-server' (54yyyu); the command is 'zotero-mcp'.",
     "homepage": "https://github.com/54yyyu/zotero-mcp",
     "license": "MIT",
+    "notes": "The fixed 'url'/'hash' below (the shared installer script, pinned at tag v0.1.0) exist only to satisfy Scoop's per-architecture install check; the real install is done by uv in pre_install and the downloaded file is unused. It never changes across versions, so autoupdate only bumps 'version'.",
+    "url": "https://raw.githubusercontent.com/FHYQ-Dong/Scoop-packages-with-env/v0.1.0/scripts/Install-PyTool.ps1",
+    "hash": "2312ea2bb64f72450c32b7497943cb9933eb63664b2c68fd2f42991e16e2cad4",
     "depends": [
         "python-tool-base"
     ],
