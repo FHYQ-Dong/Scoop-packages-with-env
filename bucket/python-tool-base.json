@@ -1,0 +1,15 @@
+{
+    "version": "0.1.0",
+    "description": "Shared installer for distributing Python CLI tools as Scoop manifests via uv (isolated per-tool envs, shared cache + on-demand Python). Not a user tool; other Python manifests depend on it.",
+    "homepage": "https://github.com/FHYQ-Dong/Scoop-packages-with-env",
+    "license": "MIT",
+    "notes": "Library manifest: carries the shared Install-PyTool.ps1 and a persisted uv cache. Python tool manifests 'depends' on this and call scripts\\Install-PyTool.ps1 from pre_install.",
+    "depends": [
+        "main/uv"
+    ],
+    "url": "https://raw.githubusercontent.com/FHYQ-Dong/Scoop-packages-with-env/v0.1.0/scripts/Install-PyTool.ps1",
+    "hash": "2312ea2bb64f72450c32b7497943cb9933eb63664b2c68fd2f42991e16e2cad4",
+    "persist": [
+        "uv-cache"
+    ]
+}
