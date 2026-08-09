@@ -10,14 +10,14 @@
         "  Claude Code:    claude mcp add zotero --env ZOTERO_LOCAL=true -- zotero-mcp",
         "  Claude Desktop: run 'zotero-mcp setup' (guides local/web setup and writes the Desktop config)",
         "  Manual:         add {\"command\": \"zotero-mcp\", \"env\": {\"ZOTERO_LOCAL\": \"true\"}} to your mcpServers.",
-        "Semantic search is optional and NOT installed here; it needs the 'semantic' extra (pulls in chromadb, ~0.5-0.8GB)."
+        "Semantic search is included (the 'semantic' extra / chromadb); first use downloads an embedding model (~80MB) into the cache."
     ],
     "url": "https://raw.githubusercontent.com/FHYQ-Dong/Scoop-packages-with-env/v0.1.0/scripts/Install-PyTool.ps1",
     "hash": "2312ea2bb64f72450c32b7497943cb9933eb63664b2c68fd2f42991e16e2cad4",
     "depends": [
         "python-tool-base"
     ],
-    "pre_install": "& \"$(scoop prefix python-tool-base)\\Install-PyTool.ps1\" -Package zotero-mcp-server -Version $version -Dir $dir",
+    "pre_install": "& \"$(scoop prefix python-tool-base)\\Install-PyTool.ps1\" -Package 'zotero-mcp-server[semantic]' -Version $version -Dir $dir",
     "bin": "shims\\zotero-mcp.exe",
     "checkver": {
         "url": "https://pypi.org/pypi/zotero-mcp-server/json",
