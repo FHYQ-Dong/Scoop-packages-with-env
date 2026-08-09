@@ -5,10 +5,11 @@
     "license": "MIT",
     "notes": [
         "zotero-mcp is an MCP server: your AI tool launches it on demand over stdio, so you do NOT run it standalone or set it to auto-start.",
+        "Connect to Zotero (local API, read-only, no key): in Zotero 7 enable Settings > Advanced > 'Allow other applications on this computer to communicate with Zotero', keep Zotero running, and pass ZOTERO_LOCAL=true. For web/write access use ZOTERO_API_KEY + ZOTERO_LIBRARY_ID instead.",
         "Register it in your AI tool's MCP config:",
-        "  Claude Code:    claude mcp add zotero -- zotero-mcp",
-        "  Claude Desktop: run 'zotero-mcp setup' (writes the Desktop config and guides the Zotero 7 local API)",
-        "  Manual:         add {\"command\": \"zotero-mcp\"} to your mcpServers.",
+        "  Claude Code:    claude mcp add zotero --env ZOTERO_LOCAL=true -- zotero-mcp",
+        "  Claude Desktop: run 'zotero-mcp setup' (guides local/web setup and writes the Desktop config)",
+        "  Manual:         add {\"command\": \"zotero-mcp\", \"env\": {\"ZOTERO_LOCAL\": \"true\"}} to your mcpServers.",
         "Semantic search is optional and NOT installed here; it needs the 'semantic' extra (pulls in chromadb, ~0.5-0.8GB)."
     ],
     "url": "https://raw.githubusercontent.com/FHYQ-Dong/Scoop-packages-with-env/v0.1.0/scripts/Install-PyTool.ps1",
