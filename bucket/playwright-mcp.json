@@ -1,0 +1,33 @@
+{
+    "version": "0.0.79",
+    "description": "Playwright MCP server — browser automation for AI agents (navigate, click, type, screenshot, UI review) via structured accessibility snapshots. Installs the npm package '@playwright/mcp'; the command is 'playwright-mcp'.",
+    "homepage": "https://github.com/microsoft/playwright-mcp",
+    "license": "Apache-2.0",
+    "notes": [
+        "playwright-mcp is an MCP server: your AI tool launches it on demand over stdio, so you do NOT run it standalone or set it to auto-start.",
+        "Register it in your AI tool's MCP config:",
+        "  Claude Code: claude mcp add playwright -- playwright-mcp",
+        "  Manual:      add {\"command\": \"playwright-mcp\"} to your mcpServers.",
+        "Browser: defaults to your installed Google Chrome. To use a Playwright-managed browser instead, run 'playwright-mcp install-browser chromium' (downloads to %LOCALAPPDATA%\\ms-playwright, shared with any other Playwright on this machine) and pass '--browser chromium'.",
+        "Useful flags: --headless, --browser <chrome|chromium|firefox|webkit|msedge>, --isolated, --device \"iPhone 15\". Run 'playwright-mcp --help' for the full list."
+    ],
+    "depends": "versions/nodejs22",
+    "url": "https://registry.npmjs.org/@playwright/mcp/-/mcp-0.0.79.tgz",
+    "hash": "sha512:569a83e1adef172190318f6c87750988eeb08dcbab8209258ca7c0c821cbd105866399ba121af730db000073c31cefff9f5de0d0f0a3a476ad00e8ae96ba9d65",
+    "extract_dir": "package",
+    "pre_install": [
+        "Push-Location $dir; & \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22\\current\\npm.cmd\" install --production --no-audit --no-fund 2>&1 | Out-Null; Pop-Location",
+        "\"@`\"%~dp0..\\..\\nodejs22\\current\\node.exe`\" `\"%~dp0cli.js`\" %*\" | Out-File -Encoding ascii \"$dir\\playwright-mcp.cmd\""
+    ],
+    "bin": "playwright-mcp.cmd",
+    "checkver": {
+        "url": "https://registry.npmjs.org/@playwright/mcp/latest",
+        "jsonpath": "$.version"
+    },
+    "autoupdate": {
+        "url": "https://registry.npmjs.org/@playwright/mcp/-/mcp-$version.tgz",
+        "hash": {
+            "mode": "download"
+        }
+    }
+}

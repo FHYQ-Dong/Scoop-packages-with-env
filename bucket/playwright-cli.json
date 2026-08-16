@@ -1,0 +1,30 @@
+{
+    "version": "0.1.18",
+    "description": "Playwright CLI for coding agents — a stateful browser session driven by shell commands (open/goto/click/fill), returning accessibility snapshots. More token-efficient than MCP. Installs the npm package '@playwright/cli'; the command is 'playwright-cli'.",
+    "homepage": "https://github.com/microsoft/playwright-cli",
+    "license": "Apache-2.0",
+    "notes": [
+        "Install the bundled agent skill so Claude Code / Copilot know how to drive it: run 'playwright-cli install --skills' in your project (writes .claude\\skills\\playwright-cli), or '--skills=agents' for .agents\\skills. Without it an agent can still read 'playwright-cli --help'.",
+        "Stateful: 'playwright-cli open <url>' starts a persistent browser session; later commands (goto, click e15, fill e5 \"text\", snapshot, close) act on that same session.",
+        "Browsers are NOT installed with this package. Run 'playwright install chromium' (from the 'playwright' manifest) or let the CLI prompt you; they land in %LOCALAPPDATA%\\ms-playwright, shared with playwright and playwright-mcp."
+    ],
+    "depends": "versions/nodejs22",
+    "url": "https://registry.npmjs.org/@playwright/cli/-/cli-0.1.18.tgz",
+    "hash": "sha512:82035f6181fe1ac65319488110bf1fe8de63d2c798114139daff9f216a8afc0dfa406dfa70bd0427bf6a5935d83b6b9931453bbe6fa3937c747ca08f2fa52e23",
+    "extract_dir": "package",
+    "pre_install": [
+        "Push-Location $dir; & \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22\\current\\npm.cmd\" install --production --no-audit --no-fund 2>&1 | Out-Null; Pop-Location",
+        "\"@`\"%~dp0..\\..\\nodejs22\\current\\node.exe`\" `\"%~dp0playwright-cli.js`\" %*\" | Out-File -Encoding ascii \"$dir\\playwright-cli.cmd\""
+    ],
+    "bin": "playwright-cli.cmd",
+    "checkver": {
+        "url": "https://registry.npmjs.org/@playwright/cli/latest",
+        "jsonpath": "$.version"
+    },
+    "autoupdate": {
+        "url": "https://registry.npmjs.org/@playwright/cli/-/cli-$version.tgz",
+        "hash": {
+            "mode": "download"
+        }
+    }
+}

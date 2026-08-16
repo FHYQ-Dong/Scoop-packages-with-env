@@ -62,6 +62,14 @@ scoop install packages-with-env/zotero-mcp      # Python example
 - `devcontainer` — [@devcontainers/cli](https://github.com/devcontainers/cli) reference implementation (npm)
 - `wavedrom-cli` — WaveDrom command-line renderer (npm)
 - `skills` — (npm)
+- `playwright` — [playwright](https://playwright.dev) CLI: browser automation and end-to-end testing, codegen, trace viewer (npm)
+- `playwright-cli` — [@playwright/cli](https://github.com/microsoft/playwright-cli), stateful browser CLI for coding agents, ships an agent skill (npm)
+- `playwright-mcp` — [@playwright/mcp](https://github.com/microsoft/playwright-mcp), Playwright MCP server for AI browser automation / UI review (npm)
+
+The three Playwright packages share one engine (`playwright-core`) and one browser cache
+(`%LOCALAPPDATA%\ms-playwright`), and differ only in how they are driven: `playwright` is for
+humans (write scripts, run tests), `playwright-cli` exposes a stateful session as shell commands
+for coding agents, and `playwright-mcp` exposes the same capabilities over MCP.
 - `zotero-mcp` — [zotero-mcp-server](https://github.com/54yyyu/zotero-mcp), Zotero MCP server for Claude and other AI assistants (Python)
 - `python-tool-base` — shared installer library for Python tools (a dependency, not a user tool)
 
