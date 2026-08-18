@@ -10,19 +10,41 @@ Scoop bucket for distributing **npm** and **Python** command-line packages as Sc
 Each npm package is a Scoop app. Instead of bundling Node.js, manifests `depends` on a **private Node.js runtime maintained in this bucket** and generate a `.cmd` shim that points to `node.exe` through Scoop's `current` symlink.
 
 ```
-scoop/apps/
-├── nodejs22-runtime/            # private runtime — NOT on PATH, no shims
-│   ├── 22.23.2/
-│   ├── 22.23.3/                 # after update
-│   └── current → 22.23.3
-├── devcontainer/
-│   └── 0.88.0/
-│       ├── package/             # extract_dir: "package" (from npm tgz)
-│       └── devcontainer.cmd     # generated shim → node.exe via current
-└── ...
+scoop/
+├── apps/
+│   ├── nodejs22-runtime/        # private runtime — NOT on PATH, no shims
+│   │   ├── 22.23.2/
+│   │   ├── 22.23.3/             # after update
+│   │   └── current → 22.23.3
+│   ├── nodejs20-runtime/        # another major, if some package needs one
+│   │   └── current → 20.20.2
+│   └── devcontainer/
+│       └── 0.88.0/
+│           ├── package/         # extract_dir: "package" (from npm tgz)
+│           └── devcontainer.cmd # generated shim → node.exe via current
+└── shims/
+    ├── devcontainer.cmd         # Scoop's shim → the generated one above
+    └── devcontainer             # its shell-script sibling (Git Bash, MSYS)
 ```
 
-The shim uses the `current` symlink (not a hardcoded patch version), so it survives `scoop update` (Node repoints `current`) and `scoop cleanup` (old versions removed, `current` kept). Each npm package can point at a different Node major version — one `nodejs<major>-runtime` manifest per major, coexisting.
+The shim uses the `current` symlink (not a hardcoded patch version), so it survives `scoop update` (Node repoints `current`) and `scoop cleanup` (old versions removed, `current` kept).
+
+### Where a package's shim actually lives
+
+There are **two** layers, and it helps to keep them apart:
+
+| File | Written by | Contents |
+| --- | --- | --- |
+| `apps/<pkg>/current/<pkg>.cmd` | this bucket's `pre_install` | `@"%~dp0..\..\nodejs22-runtime\current\node.exe" "%~dp0cli.js" %*` |
+| `shims/<pkg>.cmd` + `shims/<pkg>` | Scoop, from the `bin` field | a one-line forwarder to the file above |
+
+Only `scoop/shims` is on your PATH, so that is what you actually invoke; it forwards to the generated `.cmd`, which is the piece that knows where Node.js is. This is also why `bin` must be produced in `pre_install` and not `post_install` — Scoop creates the `shims/` entry between those two steps, so a shim generated later has nothing to point at.
+
+### Several Node.js majors side by side
+
+One manifest per major, each its own Scoop app, each unpacked into its own directory: `nodejs20-runtime` and `nodejs22-runtime` install and update independently and neither is visible anywhere. A package is bound to exactly one of them by the app name baked into both its `depends` and its generated shim, so `devcontainer` can run on Node 20 while `playwright` runs on Node 22 with no interaction between them.
+
+Nothing has to be reconciled by hand when a new major shows up — point a package's `depends` at `nodejs<major>-runtime` and run `scripts/Sync-NodeRuntimes.ps1` (below), which writes the manifest for you.
 
 ### Why a private runtime instead of the versions bucket
 
@@ -31,6 +53,21 @@ The shim uses the `current` symlink (not a hardcoded patch version), so it survi
 The runtime manifests here are a plain unpack of the official `nodejs.org` archive with **no `bin`, no `env_add_path`, no `persist`**. Installing one changes nothing you can observe: `node` on your command line stays whatever it was. The packages reach it by absolute path, which is all they ever needed.
 
 `checkver`/`autoupdate` track `nodejs.org/dist/latest-v<major>.x/`, so Excavator keeps the runtimes current without anyone touching them.
+
+### `scripts/Sync-NodeRuntimes.ps1`
+
+```powershell
+.\scripts\Sync-NodeRuntimes.ps1          # create what's missing, report the rest
+.\scripts\Sync-NodeRuntimes.ps1 -Check   # report only; exit 1 if out of sync (CI)
+```
+
+It reads every manifest in `bucket/` and
+
+- writes `nodejs<major>-runtime.json` for any runtime named in a `depends` that has no manifest yet, resolving that major's latest release and its SHA-256 from `nodejs.org`;
+- **checks that each package's generated shim names the same runtime as its own `depends`** — the shim hardcodes the app name, so a mismatch silently points at a directory nobody installs, and the package fails only at run time;
+- warns about runtime manifests no package depends on any more.
+
+It deliberately does *not* bump an existing runtime to a newer patch — the runtime manifests carry `checkver`/`autoupdate`, so Excavator owns that.
 
 ## Python packages — uv-backed isolated environments
 
