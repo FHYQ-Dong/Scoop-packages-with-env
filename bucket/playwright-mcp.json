@@ -11,13 +11,13 @@
         "Browser: defaults to your installed Google Chrome. To use a Playwright-managed browser instead, run 'playwright-mcp install-browser chromium' (downloads to %LOCALAPPDATA%\\ms-playwright, shared with any other Playwright on this machine) and pass '--browser chromium'.",
         "Useful flags: --headless, --browser <chrome|chromium|firefox|webkit|msedge>, --isolated, --device \"iPhone 15\". Run 'playwright-mcp --help' for the full list."
     ],
-    "depends": "versions/nodejs22",
+    "depends": "nodejs22-runtime",
     "url": "https://registry.npmjs.org/@playwright/mcp/-/mcp-0.0.79.tgz",
     "hash": "sha512:569a83e1adef172190318f6c87750988eeb08dcbab8209258ca7c0c821cbd105866399ba121af730db000073c31cefff9f5de0d0f0a3a476ad00e8ae96ba9d65",
     "extract_dir": "package",
     "pre_install": [
-        "Push-Location $dir; & \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22\\current\\npm.cmd\" install --production --no-audit --no-fund 2>&1 | Out-Null; Pop-Location",
-        "\"@`\"%~dp0..\\..\\nodejs22\\current\\node.exe`\" `\"%~dp0cli.js`\" %*\" | Out-File -Encoding ascii \"$dir\\playwright-mcp.cmd\""
+        "Push-Location $dir; & \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\\npm.cmd\" install --production --no-audit --no-fund 2>&1 | Out-Null; Pop-Location",
+        "\"@`\"%~dp0..\\..\\nodejs22-runtime\\current\\node.exe`\" `\"%~dp0cli.js`\" %*\" | Out-File -Encoding ascii \"$dir\\playwright-mcp.cmd\""
     ],
     "bin": "playwright-mcp.cmd",
     "checkver": {

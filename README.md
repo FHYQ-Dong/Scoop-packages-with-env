@@ -7,22 +7,30 @@ Scoop bucket for distributing **npm** and **Python** command-line packages as Sc
 
 ## npm packages — shared Node.js runtime
 
-Each npm package is a Scoop app. Instead of bundling Node.js, manifests `depends` on a Scoop-managed Node.js runtime (from the [versions](https://github.com/ScoopInstaller/Versions) bucket) and generate a `.cmd` shim that points to `node.exe` through Scoop's `current` symlink.
+Each npm package is a Scoop app. Instead of bundling Node.js, manifests `depends` on a **private Node.js runtime maintained in this bucket** and generate a `.cmd` shim that points to `node.exe` through Scoop's `current` symlink.
 
 ```
 scoop/apps/
-├── nodejs20/                    # Scoop-managed Node.js (via versions bucket)
-│   ├── 20.20.2/
-│   ├── 20.20.3/                 # after update
-│   └── current → 20.20.3
+├── nodejs22-runtime/            # private runtime — NOT on PATH, no shims
+│   ├── 22.23.2/
+│   ├── 22.23.3/                 # after update
+│   └── current → 22.23.3
 ├── devcontainer/
-│   └── 0.87.0/
+│   └── 0.88.0/
 │       ├── package/             # extract_dir: "package" (from npm tgz)
 │       └── devcontainer.cmd     # generated shim → node.exe via current
 └── ...
 ```
 
-The shim uses the `current` symlink (not a hardcoded patch version), so it survives `scoop update` (Node repoints `current`) and `scoop cleanup` (old versions removed, `current` kept). Each npm package can point at a different Node major version.
+The shim uses the `current` symlink (not a hardcoded patch version), so it survives `scoop update` (Node repoints `current`) and `scoop cleanup` (old versions removed, `current` kept). Each npm package can point at a different Node major version — one `nodejs<major>-runtime` manifest per major, coexisting.
+
+### Why a private runtime instead of the versions bucket
+
+`versions/nodejs22` declares `"env_add_path": ["bin", "."]` and no `bin`, so installing it puts Node.js on your **PATH**, where it shadows whatever you actually manage Node with — fnm, nvm, volta, or a system install. That is a real cost to pay for a dependency you never invoke yourself.
+
+The runtime manifests here are a plain unpack of the official `nodejs.org` archive with **no `bin`, no `env_add_path`, no `persist`**. Installing one changes nothing you can observe: `node` on your command line stays whatever it was. The packages reach it by absolute path, which is all they ever needed.
+
+`checkver`/`autoupdate` track `nodejs.org/dist/latest-v<major>.x/`, so Excavator keeps the runtimes current without anyone touching them.
 
 ## Python packages — uv-backed isolated environments
 
@@ -49,7 +57,6 @@ Scoop requires every manifest to have a `url` for the current architecture (`Get
 ## Setup
 
 ```powershell
-scoop bucket add versions   # for npm packages (nodejs18/20/22, ...)
 scoop bucket add main       # for Python packages (provides uv, pulled via depends)
 scoop bucket add packages-with-env https://github.com/FHYQ-Dong/Scoop-packages-with-env
 
@@ -72,15 +79,17 @@ humans (write scripts, run tests), `playwright-cli` exposes a stateful session a
 for coding agents, and `playwright-mcp` exposes the same capabilities over MCP.
 - `zotero-mcp` — [zotero-mcp-server](https://github.com/54yyyu/zotero-mcp), Zotero MCP server for Claude and other AI assistants (Python)
 - `python-tool-base` — shared installer library for Python tools (a dependency, not a user tool)
+- `nodejs22-runtime` — private Node.js 22 runtime for the npm packages (a dependency, not a user tool; stays off PATH)
 
 ## Contributing
 
 ### Add an npm package
 
 1. Create `bucket/<package>.json`
-2. `depends` on the Node.js version from the `versions` bucket
+2. `depends` on `nodejs<major>-runtime` (this bucket's private runtime, per the package's `engines.node`)
 3. `extract_dir: "package"`; `pre_install` generates a `.cmd` shim → `node.exe` via `current`
 4. `checkver` + `autoupdate` track the npm registry
+5. Run `.\scripts\Sync-NodeRuntimes.ps1` — creates the runtime manifest if that Node major is new to the bucket, and verifies the shim points at the runtime the manifest actually depends on
 
 Reference: `bucket/devcontainer.json`.
 

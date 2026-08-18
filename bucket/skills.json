@@ -3,14 +3,14 @@
     "description": "The open agent skills ecosystem",
     "homepage": "https://www.npmjs.com/package/skills",
     "license": "MIT",
-    "depends": "versions/nodejs22",
+    "depends": "nodejs22-runtime",
     "url": "https://registry.npmjs.org/skills/-/skills-1.5.22.tgz",
     "hash": "10cee39139debe6c0188f4727194ade59234b277ccca2320e3ed6b620ee7f14b",
     "extract_dir": "package",
     "pre_install": [
-        "Push-Location $dir; & \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22\\current\\npm.cmd\" install --production --no-audit --no-fund 2>&1 | Out-Null; Pop-Location",
-        "\"@`\"%~dp0..\\..\\nodejs22\\current\\node.exe`\" `\"%~dp0bin\\cli.mjs`\" %*\" | Out-File -Encoding ascii \"$dir\\skills.cmd\"",
-        "\"@`\"%~dp0..\\..\\nodejs22\\current\\node.exe`\" `\"%~dp0bin\\cli.mjs`\" %*\" | Out-File -Encoding ascii \"$dir\\add-skill.cmd\""
+        "Push-Location $dir; & \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\\npm.cmd\" install --production --no-audit --no-fund 2>&1 | Out-Null; Pop-Location",
+        "\"@`\"%~dp0..\\..\\nodejs22-runtime\\current\\node.exe`\" `\"%~dp0bin\\cli.mjs`\" %*\" | Out-File -Encoding ascii \"$dir\\skills.cmd\"",
+        "\"@`\"%~dp0..\\..\\nodejs22-runtime\\current\\node.exe`\" `\"%~dp0bin\\cli.mjs`\" %*\" | Out-File -Encoding ascii \"$dir\\add-skill.cmd\""
     ],
     "bin": [
         "skills.cmd",

@@ -3,11 +3,11 @@
     "description": "A reference implementation for the development container specification",
     "homepage": "https://github.com/devcontainers/cli",
     "license": "MIT",
-    "depends": "versions/nodejs20",
+    "depends": "nodejs22-runtime",
     "url": "https://registry.npmjs.org/@devcontainers/cli/-/cli-0.88.0.tgz",
     "hash": "5cac67ef43a7150734e952b6b8ceb70949a492a090e79a0c8ed9e848f0aae72b",
     "extract_dir": "package",
-    "pre_install": "\"@`\"%~dp0..\\..\\nodejs20\\current\\node.exe`\" `\"%~dp0devcontainer.js`\" %*\" | Out-File -Encoding ascii \"$dir\\devcontainer.cmd\"",
+    "pre_install": "\"@`\"%~dp0..\\..\\nodejs22-runtime\\current\\node.exe`\" `\"%~dp0devcontainer.js`\" %*\" | Out-File -Encoding ascii \"$dir\\devcontainer.cmd\"",
     "bin": "devcontainer.cmd",
     "checkver": {
         "url": "https://registry.npmjs.org/@devcontainers/cli/latest",

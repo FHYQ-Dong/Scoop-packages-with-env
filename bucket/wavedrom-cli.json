@@ -3,13 +3,13 @@
     "description": "WaveDrom command-line interface — render digital timing diagrams from WaveJSON",
     "homepage": "https://wavedrom.com",
     "license": "MIT",
-    "depends": "versions/nodejs22",
+    "depends": "nodejs22-runtime",
     "url": "https://registry.npmjs.org/wavedrom-cli/-/wavedrom-cli-3.2.0.tgz",
     "hash": "sha512:297d3b4ff5879d77e6a28db0be32e5c7478a786228b41d02e469df5951f294f7d26bb06e368d1b92d4422f6fb327783bd8829cd69b2e448199227effb287b16a",
     "extract_dir": "package",
     "pre_install": [
-        "Push-Location $dir; & \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22\\current\\npm.cmd\" install --production --no-audit --no-fund 2>&1 | Out-Null; Pop-Location",
-        "\"@`\"%~dp0..\\..\\nodejs22\\current\\node.exe`\" `\"%~dp0wavedrom-cli.js`\" %*\" | Out-File -Encoding ascii \"$dir\\wavedrom-cli.cmd\""
+        "Push-Location $dir; & \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\\npm.cmd\" install --production --no-audit --no-fund 2>&1 | Out-Null; Pop-Location",
+        "\"@`\"%~dp0..\\..\\nodejs22-runtime\\current\\node.exe`\" `\"%~dp0wavedrom-cli.js`\" %*\" | Out-File -Encoding ascii \"$dir\\wavedrom-cli.cmd\""
     ],
     "bin": "wavedrom-cli.cmd",
     "checkver": {
