@@ -69,6 +69,7 @@ scoop install packages-with-env/zotero-mcp      # Python example
 - `devcontainer` — [@devcontainers/cli](https://github.com/devcontainers/cli) reference implementation (npm)
 - `wavedrom-cli` — WaveDrom command-line renderer (npm)
 - `skills` — (npm)
+- `paseo` — [@getpaseo/cli](https://paseo.sh), drive and monitor AI coding agents from the command line, backed by a local daemon (npm)
 - `playwright` — [playwright](https://playwright.dev) CLI: browser automation and end-to-end testing, codegen, trace viewer (npm)
 - `playwright-cli` — [@playwright/cli](https://github.com/microsoft/playwright-cli), stateful browser CLI for coding agents, ships an agent skill (npm)
 - `playwright-mcp` — [@playwright/mcp](https://github.com/microsoft/playwright-mcp), Playwright MCP server for AI browser automation / UI review (npm)
