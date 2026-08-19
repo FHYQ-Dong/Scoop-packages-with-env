@@ -4,7 +4,8 @@
     "homepage": "https://paseo.sh",
     "license": "Unknown",
     "notes": [
-        "State lives in %USERPROFILE%\\.paseo (agents, config, daemon.log) and is NOT touched by scoop install/uninstall, so your agents survive updates.",
+        "State (agents, config, models, daemon.log) lives in scoop\\persist\\paseo\\home instead of the default %USERPROFILE%\\.paseo - this manifest points PASEO_HOME there. Scoop preserves it across update and uninstall, so your agents survive both.",
+        "Migrating an existing install: stop the daemon, move %USERPROFILE%\\.paseo into scoop\\persist\\paseo\\home, then start it again. Otherwise paseo starts empty and the old directory is left behind (the bundled voice models alone are ~1 GB).",
         "The daemon is separate from the CLI: 'paseo daemon start' / 'stop' / 'status'. 'paseo onboard' does first-time setup and prints pairing instructions.",
         "Stop the daemon before 'scoop update paseo' or 'scoop cleanup' - a running daemon holds node.exe inside the app directory and scoop cannot replace or remove it.",
         "Large install (~500 MB): the dependency tree bundles the Anthropic and OpenAI SDKs plus native modules (node-pty, sherpa-onnx). Those native modules are built against a Node ABI, so reinstall after the runtime moves to a new Node major."
@@ -14,10 +15,19 @@
     "hash": "sha512:0a67f08fed69a0b048a7bd8daadd419c98d29bc61c21c1208e0acf30b26152df8c24529419323b39064d3e6234b8e6b09f0742e0329a53eed2636726e450060a",
     "extract_dir": "package",
     "pre_install": [
-        "Push-Location $dir; & \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\\npm.cmd\" install --production --no-audit --no-fund 2>&1 | Out-Null; Pop-Location",
+        "$runtime = \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\"",
+        "# node-pty's install script shells out to bare 'node'; this bucket keeps Node.js off PATH, so put it there for this process only",
+        "$env:PATH = \"$runtime;$env:PATH\"",
+        "Push-Location $dir; $log = & \"$runtime\\npm.cmd\" install --omit=dev --no-audit --no-fund 2>&1; $code = $LASTEXITCODE; Pop-Location",
+        "# npm also runs the package's own 'prepare' script, which can fail on a devDependency we deliberately skipped - what matters is that the dependencies landed",
+        "if (-not (Test-Path \"$dir\\node_modules\")) { $log | Write-Host; throw \"npm install failed (exit $code)\" }",
         "\"@`\"%~dp0..\\..\\nodejs22-runtime\\current\\node.exe`\" --disable-warning=DEP0040 `\"%~dp0dist\\index.js`\" %*\" | Out-File -Encoding ascii \"$dir\\paseo.cmd\""
     ],
     "bin": "paseo.cmd",
+    "persist": "home",
+    "env_set": {
+        "PASEO_HOME": "$persist_dir\\home"
+    },
     "checkver": {
         "url": "https://registry.npmjs.org/@getpaseo/cli/latest",
         "jsonpath": "$.version"

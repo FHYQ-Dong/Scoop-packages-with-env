@@ -52,6 +52,15 @@ Nothing has to be reconciled by hand when a new major shows up — point a packa
 
 The runtime manifests here are a plain unpack of the official `nodejs.org` archive with **no `bin`, no `env_add_path`, no `persist`**. Installing one changes nothing you can observe: `node` on your command line stays whatever it was. The packages reach it by absolute path, which is all they ever needed.
 
+There is one place where an absolute path is not enough. `npm install` runs dependencies' own install scripts, and those routinely shell out to a bare `node` — `node-pty`, for one, runs `node scripts/prebuild.js`. With Node.js off PATH that fails. So `pre_install` prepends the runtime to `$env:PATH` **for the install process only**:
+
+```powershell
+$runtime = "$(Split-Path (Split-Path $dir -Parent) -Parent)\nodejs22-runtime\current"
+$env:PATH = "$runtime;$env:PATH"
+```
+
+That variable dies with Scoop's process; nothing reaches your environment.
+
 `checkver`/`autoupdate` track `nodejs.org/dist/latest-v<major>.x/`, so Excavator keeps the runtimes current without anyone touching them.
 
 ### `scripts/Sync-NodeRuntimes.ps1`

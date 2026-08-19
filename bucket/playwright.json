@@ -13,7 +13,12 @@
     "hash": "sha512:d0cf8bdcb003f3f9e6e79e0b3a56bd032c748f4b66159d0505ca10ec5d55b951e933f5e9882f11703cc1401f16e7e840f0bdb64c7c442f3785fb659c533bdc2e",
     "extract_dir": "package",
     "pre_install": [
-        "Push-Location $dir; & \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\\npm.cmd\" install --production --no-audit --no-fund 2>&1 | Out-Null; Pop-Location",
+        "$runtime = \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\"",
+        "# some npm install scripts shell out to bare 'node'; this bucket keeps Node.js off PATH, so put it there for this process only",
+        "$env:PATH = \"$runtime;$env:PATH\"",
+        "Push-Location $dir; $log = & \"$runtime\\npm.cmd\" install --omit=dev --no-audit --no-fund 2>&1; $code = $LASTEXITCODE; Pop-Location",
+        "# npm also runs the package's own 'prepare' script, which can fail on a devDependency we deliberately skipped - what matters is that the dependencies landed",
+        "if (-not (Test-Path \"$dir\\node_modules\")) { $log | Write-Host; throw \"npm install failed (exit $code)\" }",
         "\"@`\"%~dp0..\\..\\nodejs22-runtime\\current\\node.exe`\" `\"%~dp0cli.js`\" %*\" | Out-File -Encoding ascii \"$dir\\playwright.cmd\""
     ],
     "bin": "playwright.cmd",

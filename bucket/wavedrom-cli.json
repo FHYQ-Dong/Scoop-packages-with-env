@@ -8,7 +8,12 @@
     "hash": "sha512:297d3b4ff5879d77e6a28db0be32e5c7478a786228b41d02e469df5951f294f7d26bb06e368d1b92d4422f6fb327783bd8829cd69b2e448199227effb287b16a",
     "extract_dir": "package",
     "pre_install": [
-        "Push-Location $dir; & \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\\npm.cmd\" install --production --no-audit --no-fund 2>&1 | Out-Null; Pop-Location",
+        "$runtime = \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\"",
+        "# some npm install scripts shell out to bare 'node'; this bucket keeps Node.js off PATH, so put it there for this process only",
+        "$env:PATH = \"$runtime;$env:PATH\"",
+        "Push-Location $dir; $log = & \"$runtime\\npm.cmd\" install --omit=dev --no-audit --no-fund 2>&1; $code = $LASTEXITCODE; Pop-Location",
+        "# npm also runs the package's own 'prepare' script, which can fail on a devDependency we deliberately skipped - what matters is that the dependencies landed",
+        "if (-not (Test-Path \"$dir\\node_modules\")) { $log | Write-Host; throw \"npm install failed (exit $code)\" }",
         "\"@`\"%~dp0..\\..\\nodejs22-runtime\\current\\node.exe`\" `\"%~dp0wavedrom-cli.js`\" %*\" | Out-File -Encoding ascii \"$dir\\wavedrom-cli.cmd\""
     ],
     "bin": "wavedrom-cli.cmd",
