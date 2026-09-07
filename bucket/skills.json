@@ -1,11 +1,11 @@
 {
-    "version": "1.5.23",
+    "version": "1.5.24",
     "description": "The open agent skills ecosystem",
     "homepage": "https://www.npmjs.com/package/skills",
     "license": "MIT",
     "depends": "nodejs22-runtime",
-    "url": "https://registry.npmjs.org/skills/-/skills-1.5.23.tgz",
-    "hash": "a4ddbadeedfd7aee5e1823c2037b0a313ce4017a8ff1f23b9f7fe30d52a1c963",
+    "url": "https://registry.npmjs.org/skills/-/skills-1.5.24.tgz",
+    "hash": "104d02a446f1defc46d67480b40d95f481725fc8b3a491d93b1f5c1a45daf960",
     "extract_dir": "package",
     "pre_install": [
         "$runtime = \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\"",
