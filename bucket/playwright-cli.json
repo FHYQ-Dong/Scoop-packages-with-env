@@ -1,5 +1,5 @@
 {
-    "version": "0.1.20",
+    "version": "0.1.21",
     "description": "Playwright CLI for coding agents — a stateful browser session driven by shell commands (open/goto/click/fill), returning accessibility snapshots. More token-efficient than MCP. Installs the npm package '@playwright/cli'; the command is 'playwright-cli'.",
     "homepage": "https://github.com/microsoft/playwright-cli",
     "license": "Apache-2.0",
@@ -9,8 +9,8 @@
         "Browsers are NOT installed with this package. Run 'playwright install chromium' (from the 'playwright' manifest) or let the CLI prompt you; they land in %LOCALAPPDATA%\\ms-playwright, shared with playwright and playwright-mcp."
     ],
     "depends": "nodejs22-runtime",
-    "url": "https://registry.npmjs.org/@playwright/cli/-/cli-0.1.20.tgz",
-    "hash": "877a33d75831ad6ab4e30ed358e19c178747f14834d5fa6e5dc2a294787c06d2",
+    "url": "https://registry.npmjs.org/@playwright/cli/-/cli-0.1.21.tgz",
+    "hash": "46d0b66061dd4a84c287e36965fd3f1a8c6a49cbcf3b3f90f842023833d5234c",
     "extract_dir": "package",
     "pre_install": [
         "$runtime = \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\"",
