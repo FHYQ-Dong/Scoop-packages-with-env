@@ -1,5 +1,5 @@
 {
-    "version": "0.0.82",
+    "version": "0.0.83",
     "description": "Playwright MCP server — browser automation for AI agents (navigate, click, type, screenshot, UI review) via structured accessibility snapshots. Installs the npm package '@playwright/mcp'; the command is 'playwright-mcp'.",
     "homepage": "https://github.com/microsoft/playwright-mcp",
     "license": "Apache-2.0",
@@ -12,8 +12,8 @@
         "Useful flags: --headless, --browser <chrome|chromium|firefox|webkit|msedge>, --isolated, --device \"iPhone 15\". Run 'playwright-mcp --help' for the full list."
     ],
     "depends": "nodejs22-runtime",
-    "url": "https://registry.npmjs.org/@playwright/mcp/-/mcp-0.0.82.tgz",
-    "hash": "f668e5a4ebce36b8741af2785a9b6f82edc18e35132b2dc22a8b581c655d4ede",
+    "url": "https://registry.npmjs.org/@playwright/mcp/-/mcp-0.0.83.tgz",
+    "hash": "f0014a13361b1ee2d8607a4e187868ab9a6e8ac637dbcd66e4af43f738d0c8cb",
     "extract_dir": "package",
     "pre_install": [
         "$runtime = \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\"",
