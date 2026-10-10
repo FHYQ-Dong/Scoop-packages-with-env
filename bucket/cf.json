@@ -1,0 +1,36 @@
+{
+    "version": "1.0.0-beta.14",
+    "description": "Cloudflare's official command-line interface for the Cloudflare API and Workers projects",
+    "homepage": "https://developers.cloudflare.com/cf/",
+    "license": "MIT OR Apache-2.0",
+    "depends": "nodejs22-runtime",
+    "url": "https://registry.npmjs.org/cf/-/cf-1.0.0-beta.14.tgz",
+    "hash": "sha512:0880d5e490142212514c23c6de047bd8107335b3c7d0daa917f0b777a98f4d715dd4b31b0207c0bfa0b4b20d0cb4b2dbd1b973d6416e7430dde1ace5290fe9f4",
+    "extract_dir": "package",
+    "pre_install": [
+        "$runtime = \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\"",
+        "# npm install scripts call a bare 'node'; this bucket keeps Node.js off PATH, so put it there for this process only",
+        "$env:PATH = \"$runtime;$env:PATH\"",
+        "# The published package includes devDependencies with unavailable workspace tarballs; remove them before resolving runtime dependencies",
+        "Push-Location $dir; & \"$runtime\\npm.cmd\" pkg delete devDependencies; $deleteCode = $LASTEXITCODE; Pop-Location",
+        "if ($deleteCode -ne 0) { throw \"npm pkg delete devDependencies failed (exit $deleteCode)\" }",
+        "Push-Location $dir; $log = & \"$runtime\\npm.cmd\" install --omit=dev --no-save --no-package-lock --no-audit --no-fund 2>&1; $code = $LASTEXITCODE; Pop-Location",
+        "if (-not (Test-Path \"$dir\\node_modules\")) { $log | Write-Host; throw \"npm install failed (exit $code)\" }",
+        "\"@`\"%~dp0..\\..\\nodejs22-runtime\\current\\node.exe`\" `\"%~dp0bin\\cf`\" %*\" | Out-File -Encoding ascii \"$dir\\cf.cmd\"",
+        "\"@`\"%~dp0..\\..\\nodejs22-runtime\\current\\node.exe`\" `\"%~dp0bin\\cf`\" %*\" | Out-File -Encoding ascii \"$dir\\cloudflare.cmd\""
+    ],
+    "bin": [
+        "cf.cmd",
+        "cloudflare.cmd"
+    ],
+    "checkver": {
+        "url": "https://registry.npmjs.org/cf/latest",
+        "jsonpath": "$.version"
+    },
+    "autoupdate": {
+        "url": "https://registry.npmjs.org/cf/-/cf-$version.tgz",
+        "hash": {
+            "mode": "download"
+        }
+    }
+}

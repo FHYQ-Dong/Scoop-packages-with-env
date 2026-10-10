@@ -9,3 +9,5 @@
 # AI agent files
 CLAUDE.md
 .claude/**
+AGENTS.md
+codegraph.mdc
