@@ -21,7 +21,5 @@
         "url": "https://pypi.org/pypi/zotero-mcp-server/json",
         "jsonpath": "$.info.version"
     },
-    "autoupdate": {
-        
-    }
+    "autoupdate": {}
 }
