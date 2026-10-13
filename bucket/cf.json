@@ -1,11 +1,11 @@
 {
-    "version": "1.0.0-beta.15",
+    "version": "1.0.0-beta.16",
     "description": "Cloudflare's official command-line interface for the Cloudflare API and Workers projects",
     "homepage": "https://developers.cloudflare.com/cf/",
     "license": "MIT OR Apache-2.0",
     "depends": "nodejs22-runtime",
-    "url": "https://registry.npmjs.org/cf/-/cf-1.0.0-beta.15.tgz",
-    "hash": "ceac418a0d564e5e8cefe93a2f332979a3f47b5d1e0696f85b7791aa1d3f8e4f",
+    "url": "https://registry.npmjs.org/cf/-/cf-1.0.0-beta.16.tgz",
+    "hash": "e75c2dde92349e91371ae654ed83cb85524dc0c0b34c9a1bcfeb0638ca0e699c",
     "extract_dir": "package",
     "pre_install": [
         "$runtime = \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\"",
