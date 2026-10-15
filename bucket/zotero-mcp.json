@@ -1,5 +1,5 @@
 {
-    "version": "0.14.1",
+    "version": "0.15.0",
     "description": "MCP server connecting your Zotero library to Claude and other AI assistants (search, cite, summarize, semantic search). Installs the PyPI package 'zotero-mcp-server' (54yyyu); the command is 'zotero-mcp'.",
     "homepage": "https://github.com/54yyyu/zotero-mcp",
     "license": "MIT",
@@ -21,5 +21,7 @@
         "url": "https://pypi.org/pypi/zotero-mcp-server/json",
         "jsonpath": "$.info.version"
     },
-    "autoupdate": {}
+    "autoupdate": {
+        
+    }
 }
