@@ -1,5 +1,5 @@
 {
-    "version": "1.64.1",
+    "version": "1.65.0",
     "description": "Playwright CLI — browser automation and end-to-end testing (codegen, test, screenshot, pdf, trace viewer). Installs the npm package 'playwright'; the command is 'playwright'.",
     "homepage": "https://playwright.dev",
     "license": "Apache-2.0",
@@ -9,8 +9,8 @@
         "Common commands: 'playwright codegen <url>' (record a script), 'playwright test' (run tests), 'playwright screenshot <url> <file>', 'playwright show-trace <trace.zip>'."
     ],
     "depends": "nodejs22-runtime",
-    "url": "https://registry.npmjs.org/playwright/-/playwright-1.64.1.tgz",
-    "hash": "36ba838d2d55c44fafcff89f919b5d7bc829209318076578ee2bc7cb5687fd57",
+    "url": "https://registry.npmjs.org/playwright/-/playwright-1.65.0.tgz",
+    "hash": "5c535e6d0b00411c7b926f2f39aeaa80b9daa9ccfa2dd5c21db718cd8808aa42",
     "extract_dir": "package",
     "pre_install": [
         "$runtime = \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\"",
