@@ -1,5 +1,5 @@
 {
-    "version": "0.15.3",
+    "version": "0.15.4",
     "description": "Paseo CLI - create, drive and monitor AI coding agents from the command line, backed by a local daemon. Installs the npm package '@getpaseo/cli'; the command is 'paseo'.",
     "homepage": "https://paseo.sh",
     "license": "Unknown",
@@ -11,8 +11,8 @@
         "Large install (~500 MB): the dependency tree bundles the Anthropic and OpenAI SDKs plus native modules (node-pty, sherpa-onnx). Those native modules are built against a Node ABI, so reinstall after the runtime moves to a new Node major."
     ],
     "depends": "nodejs22-runtime",
-    "url": "https://registry.npmjs.org/@getpaseo/cli/-/cli-0.15.3.tgz",
-    "hash": "7741a9edc505b136befc784fda2100e850b055c145ad2455c6e062bb59893f58",
+    "url": "https://registry.npmjs.org/@getpaseo/cli/-/cli-0.15.4.tgz",
+    "hash": "fd31167cede41c6a789b0d634dc9e9176d5f1ccc872cd7c698829c49eb0715d1",
     "extract_dir": "package",
     "pre_install": [
         "$runtime = \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\"",
