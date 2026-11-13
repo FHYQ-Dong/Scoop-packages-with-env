@@ -120,6 +120,7 @@ scoop install packages-with-env/zotero-mcp      # Python example
 - `playwright-cli` — [@playwright/cli](https://github.com/microsoft/playwright-cli), stateful browser CLI for coding agents, ships an agent skill (npm)
 - `playwright-mcp` — [@playwright/mcp](https://github.com/microsoft/playwright-mcp), Playwright MCP server for AI browser automation / UI review (npm)
 - `cf` — [Cloudflare CLI](https://developers.cloudflare.com/cf/), Cloudflare official CLI for API and Workers projects (npm)
+- `resend-mcp` — [resend-mcp](https://github.com/resend/resend-mcp), Resend MCP server: send email and manage domains, contacts, broadcasts and API keys over stdio or HTTP (npm)
 
 The three Playwright packages share one engine (`playwright-core`) and one browser cache
 (`%LOCALAPPDATA%\ms-playwright`), and differ only in how they are driven: `playwright` is for
