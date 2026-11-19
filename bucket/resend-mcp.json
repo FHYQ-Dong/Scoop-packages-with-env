@@ -1,11 +1,11 @@
 {
-    "version": "2.28.2",
+    "version": "2.29.0",
     "description": "Resend MCP server - send email and manage domains, contacts, broadcasts and API keys through the Resend API (stdio and HTTP transports)",
     "homepage": "https://github.com/resend/resend-mcp",
     "license": "MIT",
     "depends": "nodejs22-runtime",
-    "url": "https://registry.npmjs.org/resend-mcp/-/resend-mcp-2.28.2.tgz",
-    "hash": "e2d1aeca77eda5a954d6990ad2102829d1e8aca211a591250d9a9358e7bdc628",
+    "url": "https://registry.npmjs.org/resend-mcp/-/resend-mcp-2.29.0.tgz",
+    "hash": "da8db6f7fff3496eded4bb11bb6fb5997f3f0a65bf9f3660ba187f48d7acf079",
     "extract_dir": "package",
     "pre_install": [
         "$runtime = \"$(Split-Path (Split-Path $dir -Parent) -Parent)\\nodejs22-runtime\\current\"",
