@@ -66,18 +66,20 @@ foreach ($name in $manifests.Keys | Sort-Object) {
         if (-not $required.ContainsKey($dep)) { $required[$dep] = @() }
         $required[$dep] += $name
 
-        # the shim generated in pre_install hardcodes the runtime's app name, so a
-        # mismatch with 'depends' means a shim pointing at a directory nobody installs
-        $preInstall = (@($manifest.pre_install) -join "`n")
-        $referenced = [regex]::Matches($preInstall, 'nodejs\d+-runtime') |
+        # 'bin' names the runtime's app name in the shim target, and pre_install names it
+        # again for the npm install step. Either way a mismatch with 'depends' means a shim
+        # pointing at a directory nobody installs, so check both.
+        $binText = if ($null -ne $manifest.bin) { $manifest.bin | ConvertTo-Json -Depth 5 -Compress } else { '' }
+        $searched = @((@($manifest.pre_install) -join "`n"), $binText) -join "`n"
+        $referenced = [regex]::Matches($searched, 'nodejs\d+-runtime') |
             ForEach-Object { $_.Value } | Sort-Object -Unique
         foreach ($ref in $referenced) {
             if ($ref -ne $dep) {
-                $problems += "$name : depends on '$dep' but pre_install points at '$ref'"
+                $problems += "$name : depends on '$dep' but its bin/pre_install points at '$ref'"
             }
         }
         if (-not $referenced) {
-            $problems += "$name : depends on '$dep' but pre_install never references it"
+            $problems += "$name : depends on '$dep' but neither bin nor pre_install references it"
         }
     }
 }

@@ -7,8 +7,13 @@
     "url": "https://registry.npmjs.org/@devcontainers/cli/-/cli-0.91.0.tgz",
     "hash": "d83e2291a799818ea8abfba634f0bb699f05a8df21376feefb07bb631844f41f",
     "extract_dir": "package",
-    "pre_install": "\"@`\"%~dp0..\\..\\nodejs22-runtime\\current\\node.exe`\" `\"%~dp0devcontainer.js`\" %*\" | Out-File -Encoding ascii \"$dir\\devcontainer.cmd\"",
-    "bin": "devcontainer.cmd",
+    "bin": [
+        [
+            "..\\..\\nodejs22-runtime\\current\\node.exe",
+            "devcontainer",
+            "$dir\\devcontainer.js"
+        ]
+    ],
     "checkver": {
         "url": "https://registry.npmjs.org/@devcontainers/cli/latest",
         "jsonpath": "$.version"

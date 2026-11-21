@@ -7,42 +7,51 @@ Scoop bucket for distributing **npm** and **Python** command-line packages as Sc
 
 ## npm packages — shared Node.js runtime
 
-Each npm package is a Scoop app. Instead of bundling Node.js, manifests `depends` on a **private Node.js runtime maintained in this bucket** and generate a `.cmd` shim that points to `node.exe` through Scoop's `current` symlink.
+Each npm package is a Scoop app. Instead of bundling Node.js, manifests `depends` on a **private Node.js runtime maintained in this bucket**, and their `bin` points at that runtime's `node.exe` through Scoop's `current` symlink, passing the package's entry script as an argument.
 
 ```
 scoop/
 ├── apps/
 │   ├── nodejs22-runtime/        # private runtime — NOT on PATH, no shims
-│   │   ├── 22.23.2/
-│   │   ├── 22.23.3/             # after update
-│   │   └── current → 22.23.3
+│   │   ├── 22.23.3/
+│   │   ├── 22.23.5/             # after update
+│   │   └── current → 22.23.5
 │   ├── nodejs20-runtime/        # another major, if some package needs one
 │   │   └── current → 20.20.2
 │   └── devcontainer/
-│       └── 0.88.0/
-│           ├── package/         # extract_dir: "package" (from npm tgz)
-│           └── devcontainer.cmd # generated shim → node.exe via current
+│       └── 0.90.0/
+│           └── package/         # extract_dir: "package" (from npm tgz)
 └── shims/
-    ├── devcontainer.cmd         # Scoop's shim → the generated one above
-    └── devcontainer             # its shell-script sibling (Git Bash, MSYS)
+    ├── devcontainer.exe         # Scoop's shim stub (the same 136 KB binary for every app)
+    └── devcontainer.shim        # path = …\nodejs22-runtime\current\node.exe
+                                 # args = …\devcontainer\current\devcontainer.js
 ```
 
-The shim uses the `current` symlink (not a hardcoded patch version), so it survives `scoop update` (Node repoints `current`) and `scoop cleanup` (old versions removed, `current` kept).
+The recorded path uses the `current` symlink (not a hardcoded patch version), so it survives `scoop update` (Node repoints `current`) and `scoop cleanup` (old versions removed, `current` kept).
 
-### Where a package's shim actually lives
+### Why the shim is a real `.exe`
 
-There are **two** layers, and it helps to keep them apart:
+`bin` uses Scoop's three-element form, `[target, alias, args]`:
 
-| File | Written by | Contents |
-| --- | --- | --- |
-| `apps/<pkg>/current/<pkg>.cmd` | this bucket's `pre_install` | `@"%~dp0..\..\nodejs22-runtime\current\node.exe" "%~dp0cli.js" %*` |
-| `shims/<pkg>.cmd` + `shims/<pkg>` | Scoop, from the `bin` field | a one-line forwarder to the file above |
+```json
+"bin": [
+    [
+        "..\\..\\nodejs22-runtime\\current\\node.exe",
+        "devcontainer",
+        "$dir\\devcontainer.js"
+    ]
+]
+```
 
-Only `scoop/shims` is on your PATH, so that is what you actually invoke; it forwards to the generated `.cmd`, which is the piece that knows where Node.js is. This is also why `bin` must be produced in `pre_install` and not `post_install` — Scoop creates the `shims/` entry between those two steps, so a shim generated later has nothing to point at.
+Because the target ends in `.exe`, Scoop writes a **real executable** to `shims/` — its own stub, plus a `.shim` file holding the interpreter path and the arguments. Scoop substitutes `$dir` for you, and by that point it is the `current` path.
+
+That matters for callers that are not a shell. A `.cmd` shim is only found when something resolves `PATHEXT`; a bare `CreateProcess` or a Node `spawn()` without `shell: true` does not, and gets `ENOENT`. VS Code tasks are the common case — the PlatformIO IDE extension execs `platformio.exe` directly — so a `.cmd` would simply be invisible to them.
+
+Earlier versions of this bucket generated a `.cmd` wrapper in `pre_install` and shimmed that instead. It worked from a shell but produced no `.exe`; `pre_install` now only ever runs `npm install`.
 
 ### Several Node.js majors side by side
 
-One manifest per major, each its own Scoop app, each unpacked into its own directory: `nodejs20-runtime` and `nodejs22-runtime` install and update independently and neither is visible anywhere. A package is bound to exactly one of them by the app name baked into both its `depends` and its generated shim, so `devcontainer` can run on Node 20 while `playwright` runs on Node 22 with no interaction between them.
+One manifest per major, each its own Scoop app, each unpacked into its own directory: `nodejs20-runtime` and `nodejs22-runtime` install and update independently and neither is visible anywhere. A package is bound to exactly one of them by the app name baked into both its `depends` and its `bin` target, so `devcontainer` can run on Node 20 while `playwright` runs on Node 22 with no interaction between them.
 
 Nothing has to be reconciled by hand when a new major shows up — point a package's `depends` at `nodejs<major>-runtime` and run `scripts/Sync-NodeRuntimes.ps1` (below), which writes the manifest for you.
 
@@ -73,7 +82,7 @@ That variable dies with Scoop's process; nothing reaches your environment.
 It reads every manifest in `bucket/` and
 
 - writes `nodejs<major>-runtime.json` for any runtime named in a `depends` that has no manifest yet, resolving that major's latest release and its SHA-256 from `nodejs.org`;
-- **checks that each package's generated shim names the same runtime as its own `depends`** — the shim hardcodes the app name, so a mismatch silently points at a directory nobody installs, and the package fails only at run time;
+- **checks that each package's `bin` target names the same runtime as its own `depends`** — the app name is hardcoded there, so a mismatch silently points at a directory nobody installs, and the package fails only at run time;
 - warns about runtime manifests no package depends on any more.
 
 It deliberately does *not* bump an existing runtime to a newer patch — the runtime manifests carry `checkver`/`autoupdate`, so Excavator owns that.
@@ -137,7 +146,7 @@ for coding agents, and `playwright-mcp` exposes the same capabilities over MCP.
 
 1. Create `bucket/<package>.json`
 2. `depends` on `nodejs<major>-runtime` (this bucket's private runtime, per the package's `engines.node`)
-3. `extract_dir: "package"`; `pre_install` generates a `.cmd` shim → `node.exe` via `current`
+3. `extract_dir: "package"`; `bin` is `[["..\\..\\nodejs<major>-runtime\\current\\node.exe", "<command>", "$dir\\<entry script>"]]`, one entry per command. `pre_install` is only needed to run `npm install`
 4. `checkver` + `autoupdate` track the npm registry
 5. Run `.\scripts\Sync-NodeRuntimes.ps1` — creates the runtime manifest if that Node major is new to the bucket, and verifies the shim points at the runtime the manifest actually depends on
 

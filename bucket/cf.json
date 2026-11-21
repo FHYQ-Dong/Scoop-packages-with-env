@@ -15,13 +15,19 @@
         "Push-Location $dir; & \"$runtime\\npm.cmd\" pkg delete devDependencies; $deleteCode = $LASTEXITCODE; Pop-Location",
         "if ($deleteCode -ne 0) { throw \"npm pkg delete devDependencies failed (exit $deleteCode)\" }",
         "Push-Location $dir; $log = & \"$runtime\\npm.cmd\" install --omit=dev --no-save --no-package-lock --no-audit --no-fund 2>&1; $code = $LASTEXITCODE; Pop-Location",
-        "if (-not (Test-Path \"$dir\\node_modules\")) { $log | Write-Host; throw \"npm install failed (exit $code)\" }",
-        "\"@`\"%~dp0..\\..\\nodejs22-runtime\\current\\node.exe`\" `\"%~dp0bin\\cf`\" %*\" | Out-File -Encoding ascii \"$dir\\cf.cmd\"",
-        "\"@`\"%~dp0..\\..\\nodejs22-runtime\\current\\node.exe`\" `\"%~dp0bin\\cf`\" %*\" | Out-File -Encoding ascii \"$dir\\cloudflare.cmd\""
+        "if (-not (Test-Path \"$dir\\node_modules\")) { $log | Write-Host; throw \"npm install failed (exit $code)\" }"
     ],
     "bin": [
-        "cf.cmd",
-        "cloudflare.cmd"
+        [
+            "..\\..\\nodejs22-runtime\\current\\node.exe",
+            "cf",
+            "$dir\\bin\\cf"
+        ],
+        [
+            "..\\..\\nodejs22-runtime\\current\\node.exe",
+            "cloudflare",
+            "$dir\\bin\\cf"
+        ]
     ],
     "checkver": {
         "url": "https://registry.npmjs.org/cf/latest",
