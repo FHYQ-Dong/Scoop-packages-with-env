@@ -23,7 +23,14 @@
         "if ($deleteCode -ne 0) { throw \"npm pkg delete devDependencies failed (exit $deleteCode)\" }",
         "Push-Location $dir; $log = & \"$runtime\\npm.cmd\" install --omit=dev --no-audit --no-fund 2>&1; $code = $LASTEXITCODE; Pop-Location",
         "# npm also runs the package's own 'prepare' script, which can fail on a devDependency we deliberately skipped - what matters is that the dependencies landed",
-        "if (-not (Test-Path \"$dir\\node_modules\")) { $log | Write-Host; throw \"npm install failed (exit $code)\" }"
+        "if (-not (Test-Path \"$dir\\node_modules\")) { $log | Write-Host; throw \"npm install failed (exit $code)\" }",
+        "# Upstream bug: the CLI starts the supervisor with windowsHide, but the supervisor spawns the daemon WORKER without it. The worker asks for 'inherit' stdin and its parent is detached, so Windows gives it a fresh console - a window titled from daemon-worker.js's process.title. 'restartOnCrash: true' then respawns the worker whenever that window is closed, so it cannot be dismissed. Present in 0.15.4 and 0.16.2 alike. supervisor.js is LF-only, so inject LF.",
+        "$sup = \"$dir\\node_modules\\@getpaseo\\server\\dist\\scripts\\supervisor.js\"",
+        "$src = [IO.File]::ReadAllText($sup)",
+        "$needle = 'stdio: [\"inherit\", \"pipe\", \"pipe\", \"ipc\"],'",
+        "if ($src -match 'windowsHide') { Write-Host 'paseo: supervisor.js already sets windowsHide - upstream fixed it, drop this patch' }",
+        "elseif (-not $src.Contains($needle)) { throw \"paseo: the windowsHide patch target is gone from supervisor.js - re-read it and update this manifest, or the daemon will pop up a console window again\" }",
+        "else { [IO.File]::WriteAllText($sup, $src.Replace($needle, $needle + \"`n                windowsHide: true,\")); Write-Host 'paseo: patched supervisor.js so the daemon worker starts without a console window' }"
     ],
     "bin": [
         [
