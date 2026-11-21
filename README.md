@@ -127,6 +127,7 @@ The three Playwright packages share one engine (`playwright-core`) and one brows
 humans (write scripts, run tests), `playwright-cli` exposes a stateful session as shell commands
 for coding agents, and `playwright-mcp` exposes the same capabilities over MCP.
 - `zotero-mcp` — [zotero-mcp-server](https://github.com/54yyyu/zotero-mcp), Zotero MCP server for Claude and other AI assistants (Python)
+- `platformio` — [PlatformIO Core](https://platformio.org), build system, debugger and toolchain manager for embedded development; provides `pio`, `platformio`, `piodebuggdb` (Python)
 - `python-tool-base` — shared installer library for Python tools (a dependency, not a user tool)
 - `nodejs22-runtime` — private Node.js 22 runtime for the npm packages (a dependency, not a user tool; stays off PATH)
 
